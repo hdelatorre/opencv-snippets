@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 '''
-Add or multiply two graph lines of different color using their Y values (in image coordinates).
+Add or multiply graph data lines of different color using their Y values (in image coordinates), using a cropped image.
 
 USAGE
   combine_plots.py <input image path> <output dir path> <num plot lines to extract>
 
-  With mouse select any point on the graph where Y=0 then press enter.
-  With mouse select any point that matches the color of the first plot line.
-  With mouse select any point that matches the color of the second plot line.
+  With mouse click any point that matches the color of the plot line you are targeting to extract.
+  A small window will popup that shows the currently selected color, when satisfied, press enter.
+  Continue this until you have selected the number of plot lines specified in the command-line arguments.
 '''
 from __future__ import print_function
 import numpy as np
@@ -27,8 +27,7 @@ class combine_plots(object):
         self.output_image_dir_path = output_image_dir_path
         if not os.path.isdir(self.output_image_dir_path):
             raise Exception('Output directory does not exist, please create it. ({})'.format(self.output_image_dir_path))
-        #self.added_output_image_path = added_output_image_path
-        #self.multiplied_output_image_path = multiplied_output_image_path
+
         self.dir_path = dir_path
         self.image_filename, self.image_ext = os.path.splitext(image_filename)
 
@@ -41,7 +40,7 @@ class combine_plots(object):
                                    dir_path,
                                    self.image_filename + self.image_ext, 
                                    self.image_filename + '.png')
-        #print(input_image_path)
+
         self.img = cv2.imread(input_image_path)
         self.img_win = 'show_and_select_color'
         
@@ -77,11 +76,11 @@ class combine_plots(object):
         cv2.imshow(self.img_win, self.img)
         cv2.setMouseCallback(self.img_win, self.onmouse)
 
-        print('Select the plot baseline, then press ENTER when satisfied.')
-        self.wait_for_enter_press()
-        self.baseline_x = self.x
-        self.baseline_y = self.y
-        print('\nBaseline Y value selected to be: ({},{})'.format(self.x, self.y))
+        #print('Select the plot baseline, then press ENTER when satisfied.')
+        #self.wait_for_enter_press()
+        #self.baseline_x = self.x
+        #self.baseline_y = self.y
+        #print('\nBaseline Y value selected to be: ({},{})'.format(self.x, self.y))
 
         for img_num in xrange(0, self.num_plots_to_extract):
             print('\n\nSelect the #{} plot line color, then press ENTER when satisfied.'.format(img_num))
@@ -197,17 +196,11 @@ if __name__ == '__main__':
         combiner.start()
     else:
         # I used this for debugging, since I didn't want to choose colors again
-        #input_path = '../imgs/multiline_plot_cropped.png'
-        #added_output_path = './combine_plot_out/xte1_added.png'
-        #multiplied_output_path = './combine_plot_out/xte1_multiplied.png'
-
-        input_path = '/home/nathan/Downloads/xbd1.GIF'
-        #added_output_path = './xbd1_added.png'
-        #multiplied_output_path = './xbd1_multiplied.png'
+        input_path = '../imgs/triple_line_plot_cropped.png'
         output_image_dir_path = "./out"
 
         combiner = combine_plots(os.path.abspath(input_path), os.path.abspath(output_image_dir_path), 3)
-        combiner.baseline_y = 353
+        #combiner.baseline_y = 353
         
         combiner.plot_colors = [ [204, 85, 0], [0, 0, 204], [102, 170 ,  0] ]
         
